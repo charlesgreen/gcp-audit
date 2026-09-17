@@ -1,19 +1,19 @@
 # GCP Configuration Audit
 
-Read-only Google Cloud metadata extraction and security/engineering audit. Sibling of [aws-audit](https://github.com/charlesgreen/aws-audit): same dump hygiene and report formats, separate collector, no shared cloud SDK.
+Read-only CLI that snapshots a Google Cloud project and writes findings as markdown, CSV, and JSON. Use it for monthly security reviews and as evidence toward ISO 27001 and SOC 2 technical controls.
 
-Implemented in Go with Google APIs. The `.sh` files are thin wrappers around the binaries.
+Sibling of [aws-audit](https://github.com/charlesgreen/aws-audit): same dump hygiene and report idea, separate collector, no shared cloud SDK. Implemented in Go with Google APIs.
 
 ## Install
 
-GitHub Releases (Linux amd64; replace the version):
+From a [GitHub Release](https://github.com/charlesgreen/gcp-audit/releases) (Linux amd64; replace the version):
 
 ```bash
 curl -L https://github.com/charlesgreen/gcp-audit/releases/download/v0.1.0/gcp-audit_0.1.0_Linux_x86_64.tar.gz | tar xz
 sudo mv gcp-audit gcp-audit-summarize /usr/local/bin/
 ```
 
-Or from source:
+From source:
 
 ```bash
 go install github.com/charlesgreen/gcp-audit/cmd/gcp-audit@latest
@@ -24,7 +24,7 @@ A `v*` tag on `main` runs [GoReleaser](https://goreleaser.com) and publishes arc
 
 ## Prerequisites
 
-- Go 1.24+
+- Go 1.26+ (from source; see `go.mod`)
 - [Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials) with read-only access to the target project
 
 ```bash
@@ -32,40 +32,55 @@ gcloud auth application-default login
 gcloud config set project YOUR_PROJECT
 ```
 
+`gcloud` is only for login and setting the default project. The collector uses Google APIs through ADC.
+
+## Quick start
+
+```bash
+go run ./cmd/gcp-audit --list-locations
+go run ./cmd/gcp-audit --project YOUR_PROJECT
+```
+
+After `make build`, use `./bin/gcp-audit`. After `go install` or a release archive, use `gcp-audit` on your `PATH`.
+
 ## Usage
 
 ```bash
-./gcp-audit.sh --project YOUR_PROJECT
+gcp-audit --project YOUR_PROJECT
 ```
 
 Common overrides:
 
 ```bash
-./gcp-audit.sh --project YOUR_PROJECT --locations europe-west1,asia-northeast1
-./gcp-audit.sh --project YOUR_PROJECT --out /tmp/gcp-audit --parallel 8 --format md,csv,json
+gcp-audit --project YOUR_PROJECT --locations europe-west1,asia-northeast1
+gcp-audit --project YOUR_PROJECT --out /tmp/gcp-audit --parallel 8 --format md,csv,json
 ```
 
-Print every valid location code (no GCP credentials required):
+`--project` can also come from `GOOGLE_CLOUD_PROJECT`, `CLOUDSDK_CORE_PROJECT`, or `GCP_PROJECT`.
+
+Print every valid location code (no GCP credentials):
 
 ```bash
-./gcp-audit.sh --list-locations
+gcp-audit --list-locations
 ```
 
 Re-run reports against an existing dump:
 
 ```bash
-./gcp-audit-summarize.sh ./gcp-audit-example-project-20260101-120000 --format md
-./gcp-audit-summarize.sh ./gcp-audit-example-project-20260101-120000 --format csv
-./gcp-audit-summarize.sh ./gcp-audit-example-project-20260101-120000 --format json
+gcp-audit-summarize ./gcp-audit-example-project-20260101-120000 --format md
+gcp-audit-summarize ./gcp-audit-example-project-20260101-120000 --format csv
+gcp-audit-summarize ./gcp-audit-example-project-20260101-120000 --format json
 ```
 
-## Handling audit output
+Default `--format` on a collection run writes all three: `summary.md`, `summary.csv`, `summary.json`.
+
+## Audit output
 
 Each run writes a directory of live project metadata. Treat it as confidential. Do not commit it.
 
 This repo gitignores `gcp-audit-*/` (the default output path). If you pass `--out`, keep that directory outside the working tree.
 
-VPN shared secrets and service-account private key material are replaced with `[REDACTED]` before write. Secret payloads (`access secret versions`) are not requested.
+VPN shared secrets and service-account private-key material are replaced with `[REDACTED]` before write. Secret payloads (`access secret versions`) are not requested.
 
 ## Locations
 
@@ -73,7 +88,7 @@ By default the collector scans **every compute region available to the project**
 
 ## Output layout
 
-```bash
+```text
 gcp-audit-<project>-<UTC-timestamp>/
   meta.json
   errors.log
@@ -99,10 +114,12 @@ gcp-audit-<project>-<UTC-timestamp>/
 
 ```bash
 make check    # gofmt, go vet, go test (no GCP credentials)
-make build    # bin/gcp-audit and bin/gcp-audit-summarize
+make build    # ./bin/gcp-audit and ./bin/gcp-audit-summarize
 ```
 
 Tests use a fake GCP client; they never call live APIs.
+
+Optional repo-root wrappers (`gcp-audit.sh`, `gcp-audit-summarize.sh`) exec `./bin/*` if present, otherwise `go run ./cmd/...`. Releases and `PATH` installs use the Go binaries, not the wrappers.
 
 ## License
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Thin wrapper around the Go collector (cmd/gcp-audit).
+# Optional local helper: exec ./bin/gcp-audit or go run ./cmd/gcp-audit.
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 if [[ -x "${DIR}/bin/gcp-audit" ]]; then

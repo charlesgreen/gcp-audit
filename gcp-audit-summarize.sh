@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Thin wrapper around the Go summarizer (cmd/gcp-audit-summarize).
+# Optional local helper: exec ./bin/gcp-audit-summarize or go run ./cmd/gcp-audit-summarize.
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 if [[ -x "${DIR}/bin/gcp-audit-summarize" ]]; then
