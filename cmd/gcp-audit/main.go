@@ -12,6 +12,13 @@ import (
 	"github.com/charlesgreen/gcp-audit/internal/locations"
 )
 
+// Set by GoReleaser ldflags.
+var (
+	Version = "dev"
+	Commit  = "none"
+	Date    = "unknown"
+)
+
 func main() {
 	os.Exit(run(os.Args[1:]))
 }
@@ -35,6 +42,9 @@ func run(args []string) int {
 		switch a {
 		case "-h", "--help":
 			fmt.Print(usage())
+			return 0
+		case "--version":
+			fmt.Printf("gcp-audit %s (commit %s, date %s)\n", Version, Commit, Date)
 			return 0
 		case "--list-locations":
 			listOnly = true
@@ -133,6 +143,7 @@ func usage() string {
 	return `Usage:
   gcp-audit --project ID [--locations l1,l2,...] [--out DIR] [--parallel N] [--format md,csv,json]
   gcp-audit --list-locations
+  gcp-audit --version
   gcp-audit -h|--help
 
   --project ID         GCP project id (or GOOGLE_CLOUD_PROJECT)
@@ -141,6 +152,7 @@ func usage() string {
   --parallel N         Concurrent location audits (default: 4)
   --format LIST        Report formats: md, csv, json (default: all three)
   --list-locations     Print valid location codes and exit (no GCP calls)
+  --version            Print version and exit
   -h, --help           Show this help and the valid location list
 
 Default scan: every compute region available to the project (worldwide).

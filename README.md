@@ -4,6 +4,24 @@ Read-only Google Cloud metadata extraction and security/engineering audit. Sibli
 
 Implemented in Go with Google APIs. The `.sh` files are thin wrappers around the binaries.
 
+## Install
+
+GitHub Releases (Linux amd64; replace the version):
+
+```bash
+curl -L https://github.com/charlesgreen/gcp-audit/releases/download/v0.1.0/gcp-audit_0.1.0_Linux_x86_64.tar.gz | tar xz
+sudo mv gcp-audit gcp-audit-summarize /usr/local/bin/
+```
+
+Or from source:
+
+```bash
+go install github.com/charlesgreen/gcp-audit/cmd/gcp-audit@latest
+go install github.com/charlesgreen/gcp-audit/cmd/gcp-audit-summarize@latest
+```
+
+A `v*` tag on `main` runs [GoReleaser](https://goreleaser.com) and publishes archives, checksums, and SBOMs.
+
 ## Prerequisites
 
 - Go 1.24+
