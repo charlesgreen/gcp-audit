@@ -78,7 +78,7 @@ Default `--format` on a collection run writes all three: `summary.md`, `summary.
 
 Each run writes a directory of live project metadata. Treat it as confidential. Do not commit it.
 
-This repo gitignores `gcp-audit-*/` (the default output path). If you pass `--out`, keep that directory outside the working tree.
+This repo gitignores `/gcp-audit-*/` at the repo root (the default output path). If you pass `--out`, keep that directory outside the working tree.
 
 VPN shared secrets and service-account private-key material are replaced with `[REDACTED]` before write. Secret payloads (`access secret versions`) are not requested.
 

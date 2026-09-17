@@ -29,12 +29,15 @@ go.work.sum
 .env.*
 
 # Audit dumps contain live project data. Never commit them.
-gcp-audit-*/
+# Leading slash is required: an unanchored gcp-audit-*/ also matches
+# cmd/gcp-audit-summarize and hides it from git and GoReleaser.
+/gcp-audit-*/
 /summary.md
 /summary.csv
 /summary.json
 /errors.log
 /bin/
+/dist/
 /gcp-audit
 /gcp-audit-summarize
 
