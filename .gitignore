@@ -26,6 +26,17 @@ go.work.sum
 
 # env file
 .env
+.env.*
+
+# Audit dumps contain live project data. Never commit them.
+gcp-audit-*/
+/summary.md
+/summary.csv
+/summary.json
+/errors.log
+/bin/
+/gcp-audit
+/gcp-audit-summarize
 
 # Editor/IDE
 # .idea/

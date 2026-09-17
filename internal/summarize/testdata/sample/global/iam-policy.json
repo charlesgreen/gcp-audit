@@ -1,0 +1,8 @@
+{
+  "bindings": [
+    {
+      "role": "roles/owner",
+      "members": ["user:alice@example.com"]
+    }
+  ]
+}

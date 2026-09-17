@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "name": "public-db",
+      "settings": {"ipConfiguration": {"ipv4Enabled": true}}
+    }
+  ]
+}

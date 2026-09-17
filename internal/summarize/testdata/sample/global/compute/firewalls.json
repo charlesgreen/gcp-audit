@@ -1,0 +1,10 @@
+{
+  "items": [
+    {
+      "name": "allow-ssh-world",
+      "sourceRanges": ["0.0.0.0/0"],
+      "allowed": [{"IPProtocol": "tcp", "ports": ["22"]}],
+      "disabled": false
+    }
+  ]
+}

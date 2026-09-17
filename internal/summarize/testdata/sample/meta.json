@@ -1,0 +1,5 @@
+{
+  "project_id": "example-project",
+  "principal": "auditor@example.com",
+  "locations_scanned": ["europe-west1"]
+}
